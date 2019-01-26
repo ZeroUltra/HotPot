@@ -9,12 +9,29 @@ using System;
 /// </summary>
 public class Stats : MonoBehaviour
 {
-    public static Action<PlayerInfo> updateInfo;
-    public static List<PlayerInfo> playerInfos; // 在选择角色后，进入游戏前，赋值该list
 
-    void UpdateInfo(int playerId, int repletion, int appetite)
+    // 在选择角色后，进入游戏前，赋值该list
+    public static List<PlayerInfo> playerInfos = new List<PlayerInfo>();
+    public static Action<PlayerInfo> updateInfo;
+
+    // test
+    void Awake()
     {
-        updateInfo(playerInfos[playerId]);
+        for (int i = 0; i < 4; i++)
+        {
+            playerInfos.Add(new PlayerInfo(i, 1));
+        }
+    }
+
+    public static void UpdateInfo(int id, int foodType)
+    {
+        PlayerInfo info = playerInfos[id];
+        // update info
+        info.repletion += 10;// test
+
+        // if(info.repletion >= 100)
+        //     gameover
+        updateInfo(info);
     }
 }
 

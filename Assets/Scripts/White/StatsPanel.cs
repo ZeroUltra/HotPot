@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class StatsPanel : MonoBehaviour
 {
@@ -14,16 +15,32 @@ public class StatsPanel : MonoBehaviour
     void Start()
     {
         PlayerInfo info = Stats.playerInfos[id];
+        SetPanel(info);
 
+        Stats.updateInfo += SetPanel;
     }
 
     void SetPanel(PlayerInfo info)
     {
-        //repletionBar.fillAmount = info.repletion;
+        if (info.id != id)
+            return;
+
+        repletionBar.DOFillAmount(info.repletion / 100.0f, 0.5f);
+        appetite.text = info.appetite.ToString();
+
+        List<string> preferList = info.getPreferLists();
+        string preferStr = "";
+        foreach (string name in preferList)
+            preferStr += (name + "\n");
+        prefs.text = preferStr;
     }
 
-    void Update()
+    void OnDestroy()
     {
-        
+        try
+        {
+            Stats.updateInfo -= SetPanel;
+        }
+        catch (System.Exception){};
     }
 }

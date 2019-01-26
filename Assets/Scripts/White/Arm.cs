@@ -1,32 +1,36 @@
-using System.Collections;
+ï»¿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
 
 /// <summary>
-/// ¹ÒÔØÔÚ½ÇÉ«ÊÖ±ÛÏÂ
-/// ÉìÊÖ¶¯×÷¡¢¼ĞÊ³Îï
+/// æŒ‚è½½åœ¨è§’è‰²æ‰‹è‡‚ä¸‹
+/// ä¼¸æ‰‹åŠ¨ä½œã€å¤¹é£Ÿç‰©
 /// </summary>
 public class Arm : MonoBehaviour
 {
     [SerializeField]
     KeyCode fetchKey;
+    [SerializeField]
+    int id;
 
-    float rotSpeed = 30.0f;
+    float rotSpeed = 45.0f;
     float curAngle = 0.0f;
-    float maxAngle = 30.0f;
-    float timer; // ´Ó¡°ÉìÊÖ¡±µ½¡°´¥ÅöÊÂÎï¡±µÄÊ±¼ä¼ä¸ô¡£
+    float maxAngle = 45.0f;
+    float timer; // ä»â€œä¼¸æ‰‹â€åˆ°â€œè§¦ç¢°äº‹ç‰©â€çš„æ—¶é—´é—´éš”ã€‚
 
     Sequence fetchFoodSeq;
     bool isIdle;
 
     Transform hand;
+    BoxCollider2D collider;
 
-    void Awake()
+    void Start()
     {
         timer = 0;
         isIdle = true;
         transform.localEulerAngles = Vector3.zero;
+        collider = GetComponent<BoxCollider2D>();
         hand = transform.GetChild(0);
     }
 
@@ -47,7 +51,7 @@ public class Arm : MonoBehaviour
     {
         timer = 0.0f;
 
-        // ÊÖ±ÛÉì³¤¶¯»­¡£
+        // æ‰‹è‡‚ä¼¸é•¿åŠ¨ç”»ã€‚
         fetchFoodSeq = DOTween.Sequence();
         fetchFoodSeq.Append(transform.DOScaleY(4.0f, 1.0f).SetEase(Ease.Linear));
         Tweener back = transform.DOScaleY(1.48f, 1.0f).SetEase(Ease.Linear);
@@ -59,7 +63,7 @@ public class Arm : MonoBehaviour
 
     void Rotate()
     {
-        // À´»ØÒ¡°ÚÊÖ±Û¡£ µ½´ï×î´ó½Ç¶È¸Ä±äÒ¡°Ú·½Ïò¡£
+        // æ¥å›æ‘‡æ‘†æ‰‹è‡‚ã€‚ åˆ°è¾¾æœ€å¤§è§’åº¦æ”¹å˜æ‘‡æ‘†æ–¹å‘ã€‚
         curAngle += rotSpeed * Time.deltaTime;
         curAngle = Mathf.Clamp(curAngle, -maxAngle, maxAngle);
         if (Mathf.Abs(curAngle) >= maxAngle)
@@ -70,22 +74,26 @@ public class Arm : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
+        if (collider.enabled == false)// é˜²æ­¢å¤¹å–å¤šä¸ªé£Ÿç‰©
+            return;
         Food food = collision.gameObject.GetComponent<Food>();
         if (food != null)
         {
             food.target = hand;
             fetchFoodSeq.Kill();
             Tweener back = transform.DOScaleY(1.48f, timer).SetEase(Ease.Linear);
+            collider.enabled = false; // é˜²æ­¢å¤¹å–å¤šä¸ªé£Ÿç‰©
             back.OnComplete(() => {
                 isIdle = true;
-                if(food.target == hand)
+                collider.enabled = true;
+                if (food.target == hand)
                 {
-                    Destroy(food.gameObject); // »òÌí¼ÓÊ³ÓÃ¶¯×÷£¿
+                    // æ›´æ–°è§’è‰²é¥±é£Ÿåº¦ç­‰
+                    //Stats.UpdateInfo(id, Stats.playerInfos[id].getFoodSatie(),)
+                    Stats.UpdateInfo(id, food.foodType);
 
-                    // ¸üĞÂ½ÇÉ«±¥Ê³¶ÈµÈ
-                    // Stats.EatFood(int playerId, int foodId)
-                    // ==>Stats.UpdateStats()
-                    Debug.Log("±¥Ê³¶È++");
+                    Destroy(food.gameObject); // æˆ–æ·»åŠ é£Ÿç”¨åŠ¨ä½œï¼Ÿ
+                    Debug.Log("é¥±é£Ÿåº¦++");
                 }
             });
         }
