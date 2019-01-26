@@ -19,6 +19,8 @@ public class Vomit : MonoBehaviour
     
     int index;
     ArrayList pointerAtSelf = new ArrayList();
+    bool flag;
+    GameObject shit;
 
     // Start is called before the first frame update
     void Start()
@@ -31,13 +33,13 @@ public class Vomit : MonoBehaviour
         enemy[index].GetComponent<Vomit>().Pointed(pointer);
 
         ArrangePos();
+
+        flag = false;
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        //switch target logic
         if (Input.GetKeyDown(switchKey))
         {
             enemy[index].GetComponent<Vomit>().RemovePoint(pointer);
@@ -52,22 +54,38 @@ public class Vomit : MonoBehaviour
             enemy[index].GetComponent<Vomit>().Pointed(pointer);
         }
 
-        //vomit logic
         if (Input.GetKeyDown(vomitKey))
         {
-            GameObject shit = Instantiate(shitPrefab, vomitOffset.position, vomitOffset.rotation) as GameObject;
+            shit = Instantiate(shitPrefab, vomitOffset.position, vomitOffset.rotation) as GameObject;
             Debug.Log(shit.transform.position);
             Debug.Log(enemy[index].transform.position);
-            shit.transform.position = Vector3.MoveTowards(shit.transform.position, enemy[index].transform.position, 10f * Time.fixedDeltaTime);
+
+            flag = true;
+
+            //shit.transform.position = Vector3.MoveTowards(shit.transform.position, enemy[index].transform.position, speed * Time.fixedDeltaTime);
             Debug.Log(speed * Time.deltaTime);
-            Destroy(shit, 2);
+
+            //need to call a method from playerInfo
+
         }
+
+        if (flag)
+        {
+            shit.transform.position = Vector3.MoveTowards(shit.transform.position, enemy[index].transform.position, speed * Time.fixedDeltaTime);
+        }
+
+        if ( shit != null && shit.transform.position == enemy[index].transform.position)
+        {
+            flag = false;
+            Destroy(shit, 2.0f);
+        }
+            
+
 
         ArrangePos();
 
     }
 
-    //keep track of arrow pointers on top
     public void Pointed(GameObject pt)
     {
         pointerAtSelf.Add(pt);
@@ -78,8 +96,6 @@ public class Vomit : MonoBehaviour
         pointerAtSelf.Remove(pt);
     }
 
-
-    //arrange arrow position when there is multiple ones on top
     void ArrangePos()
     {
 
