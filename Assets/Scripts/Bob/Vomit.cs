@@ -41,7 +41,7 @@ public class Vomit : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(switchKey))
+        if (Input.GetKeyDown(switchKey) && flag == false)
         {
             enemy[index].GetComponent<Vomit>().RemovePoint(pointer);
 
@@ -58,14 +58,13 @@ public class Vomit : MonoBehaviour
         enemyInfo = enemy[index].GetComponent<PlayerInfo>();
 
 
-        if (Input.GetKeyDown(vomitKey) && enemyInfo.getRepletion() >= 5)
+        if (Input.GetKeyDown(vomitKey) && enemyInfo.getRepletion() >= 5 && flag == false)
         {
             shit = Instantiate(shitPrefab, vomitOffset.position, vomitOffset.rotation) as GameObject;
             Debug.Log(shit.transform.position);
             Debug.Log(enemy[index].transform.position);
 
             flag = true;
-
         }
 
         if (flag)
@@ -81,8 +80,7 @@ public class Vomit : MonoBehaviour
             flag = false;
             Destroy(shit, 2.0f);
         }
-            
-
+        
 
         ArrangePos();
 
