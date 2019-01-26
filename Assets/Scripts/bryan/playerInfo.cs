@@ -12,7 +12,7 @@ public class playerInfo
     public List<int> dislike;
     //public Arm arm;
     public int score = 0;
-    public int jhtimes = 0;
+    public int robTimes = 0;
     public int attackTime = 0;
     private List<int> actRecord;
 
@@ -29,10 +29,38 @@ public class playerInfo
     {
         actRecord[opponent]++;
     }
+    public List<string> getPreferLists()
+    {
+        List<string> res = new List<string>();
+        for(int i = 0; i < prefer.Count; i++)
+        {
+            res.Add(getFoodNameById(prefer[i]));
+        }
+        return res;
+    }
+    private string getFoodNameById(int id)
+    {
+        if (id == Foods.beaf) return "·ÊÅ£";
+        else if (id == Foods.beafball) return "Å£ÈâÍè";
+        else if (id == Foods.egg) return "¼¦µ°";
+        else if (id == Foods.eggDumpling) return "µ°½È";
+        else if (id == Foods.lotus) return "ÅºÆ¬";
+        else if (id == Foods.luncheonMeat) return "Îç²ÍÈâ";
+        else if (id == Foods.mushroom) return "Ïã¹½";
+        else if (id == Foods.pakchoi) return "Çà²Ë";
+        else if (id == Foods.ricecake) return "Äê¸â";
+        else if (id == Foods.sausage) return "¿ª»¨Ïã³¦";
+        else if (id == Foods.shrimp) return "Ïº";
+        else if (id == Foods.tofu) return "¶³¶¹¸¯";
+        else return "?";
+    }
 
     public int getGreatestOpponent()
     {
-
+        int res = 0;
+        for (int i = 0; i < 4; i++)
+            if (actRecord[i] > actRecord[res]) res = i;
+        return res;
     }
 
     public float getPrefer(int food)
