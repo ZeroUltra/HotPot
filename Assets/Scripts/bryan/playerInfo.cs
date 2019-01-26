@@ -3,31 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class character : MonoBehaviour
+public class playerInfo
 {
     public int appetite = 1;
-    public int Satiety = 0;
+    public int type;
+    public int repletion = 0;
     public List<int> prefer;
     public List<int> dislike;
     //public Arm arm;
     public int score = 0;
     public int jhtimes = 0;
     public int attackTime = 0;
-    public List<int> actRecord;
+    private List<int> actRecord;
 
     // Start is called before the first frame update
-    void Start()
+    playerInfo(int type)
     {
         prefer = new List<int>();
-        actRecord
-
+        actRecord = new List<int>();
+        for (int i = 0; i < 4; i++) actRecord.Add(0);
+        setPrefers(type);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void attackCount(int opponent)
+    {
+        actRecord[opponent]++;
+    }
+
+    public int getGreatestOpponent()
     {
 
     }
+
     public float getPrefer(int food)
     {
         if(prefer.Exists((int s) => s == food ? true : false))
@@ -36,9 +43,9 @@ public class character : MonoBehaviour
         }
         else if (dislike.Exists((int s) => s == food ? true : false))
         {
-            return 0.5f;
+            return -1.0f;
         }
-        return 1.0f;
+        return 0.0f;
     }
     public void setPrefers(int no)
     {
