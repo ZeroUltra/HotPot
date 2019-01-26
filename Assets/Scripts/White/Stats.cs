@@ -18,8 +18,8 @@ public class Stats : MonoBehaviour
     }
 }
 
-public class PlayerInfo
-{
-    public int repletion;
-    public int appetiet;
-}
+//public class PlayerInfo
+//{
+//    public int repletion;
+//    public int appetiet;
+//}

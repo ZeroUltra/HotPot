@@ -19,7 +19,7 @@ public class StatsPanel : MonoBehaviour
 
     void SetPanel(PlayerInfo info)
     {
-        repletionBar.fillAmount = info.repletion;
+        //repletionBar.fillAmount = info.repletion;
     }
 
     void Update()

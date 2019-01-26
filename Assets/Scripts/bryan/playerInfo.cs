@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class playerInfo
+public class PlayerInfo
 {
     public int appetite = 1;
     public int type;
@@ -17,7 +17,7 @@ public class playerInfo
     private List<int> actRecord;
 
     // Start is called before the first frame update
-    playerInfo(int type)
+    PlayerInfo(int type)
     {
         prefer = new List<int>();
         actRecord = new List<int>();
