@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
 public class PlayerInfo
 {
     public int appetite = 1;
+    public int id;// Î»ÖÃĞÅÏ¢ 0-×óÉÏ 1-ÓÒÉÏ 2-×óÏÂ 3-ÓÒÏÂ
     public int type;
     public int repletion = 0;
     public List<int> prefer;
@@ -17,10 +17,13 @@ public class PlayerInfo
     private List<int> actRecord;
 
     // Start is called before the first frame update
-    PlayerInfo(int type)
+    public PlayerInfo(int _id, int _type)
     {
+        id = _id;
+        type = _type;
         prefer = new List<int>();
         actRecord = new List<int>();
+        dislike = new List<int>();
         for (int i = 0; i < 4; i++) actRecord.Add(0);
         setPrefers(type);
     }
@@ -40,18 +43,18 @@ public class PlayerInfo
     }
     private string getFoodNameById(int id)
     {
-        if (id == Foods.beaf) return "·ÊÅ£";
-        else if (id == Foods.beafball) return "Å£ÈâÍè";
-        else if (id == Foods.egg) return "¼¦µ°";
-        else if (id == Foods.eggDumpling) return "µ°½È";
-        else if (id == Foods.lotus) return "ÅºÆ¬";
-        else if (id == Foods.luncheonMeat) return "Îç²ÍÈâ";
-        else if (id == Foods.mushroom) return "Ïã¹½";
-        else if (id == Foods.pakchoi) return "Çà²Ë";
-        else if (id == Foods.ricecake) return "Äê¸â";
-        else if (id == Foods.sausage) return "¿ª»¨Ïã³¦";
-        else if (id == Foods.shrimp) return "Ïº";
-        else if (id == Foods.tofu) return "¶³¶¹¸¯";
+        if (id == FoodType.beaf) return "·ÊÅ£";
+        else if (id == FoodType.beafball) return "Å£ÈâÍè";
+        else if (id == FoodType.egg) return "¼¦µ°";
+        else if (id == FoodType.eggDumpling) return "µ°½È";
+        else if (id == FoodType.lotus) return "ÅºÆ¬";
+        else if (id == FoodType.luncheonMeat) return "Îç²ÍÈâ";
+        else if (id == FoodType.mushroom) return "Ïã¹½";
+        else if (id == FoodType.pakchoi) return "Çà²Ë";
+        else if (id == FoodType.ricecake) return "Äê¸â";
+        else if (id == FoodType.sausage) return "¿ª»¨Ïã³¦";
+        else if (id == FoodType.shrimp) return "Ïº";
+        else if (id == FoodType.tofu) return "¶³¶¹¸¯";
         else return "?";
     }
 
@@ -80,66 +83,66 @@ public class PlayerInfo
         switch (no)
         {
             case 0://grandpa
-                prefer.Add(Foods.tofu);
-                prefer.Add(Foods.egg);
+                prefer.Add(FoodType.tofu);
+                prefer.Add(FoodType.egg);
 
-                dislike.Add(Foods.beafball);
-                dislike.Add(Foods.intestine);
-                dislike.Add(Foods.sausage);
-                dislike.Add(Foods.lotus);
+                dislike.Add(FoodType.beafball);
+                dislike.Add(FoodType.intestine);
+                dislike.Add(FoodType.sausage);
+                dislike.Add(FoodType.lotus);
                 break;
             case 1://grandma
-                prefer.Add(Foods.shrimp);
-                prefer.Add(Foods.luncheonMeat);
+                prefer.Add(FoodType.shrimp);
+                prefer.Add(FoodType.luncheonMeat);
 
-                dislike.Add(Foods.ricecake);
-                dislike.Add(Foods.tofu);
-                dislike.Add(Foods.eggDumpling);
-                dislike.Add(Foods.lotus);
+                dislike.Add(FoodType.ricecake);
+                dislike.Add(FoodType.tofu);
+                dislike.Add(FoodType.eggDumpling);
+                dislike.Add(FoodType.lotus);
 
 
                 break;
             case 2://pa
-                prefer.Add(Foods.mushroom);
-                prefer.Add(Foods.intestine);
+                prefer.Add(FoodType.mushroom);
+                prefer.Add(FoodType.intestine);
 
-                dislike.Add(Foods.shrimp);
-                dislike.Add(Foods.beaf);
-                dislike.Add(Foods.luncheonMeat);
-                dislike.Add(Foods.eggDumpling);
+                dislike.Add(FoodType.shrimp);
+                dislike.Add(FoodType.beaf);
+                dislike.Add(FoodType.luncheonMeat);
+                dislike.Add(FoodType.eggDumpling);
                 break;
             case 3://ma
-                prefer.Add(Foods.luncheonMeat);
-                prefer.Add(Foods.egg);
+                prefer.Add(FoodType.luncheonMeat);
+                prefer.Add(FoodType.egg);
 
-                dislike.Add(Foods.eggDumpling);
-                dislike.Add(Foods.ricecake);
-                dislike.Add(Foods.mushroom);
-                dislike.Add(Foods.intestine);
+                dislike.Add(FoodType.eggDumpling);
+                dislike.Add(FoodType.ricecake);
+                dislike.Add(FoodType.mushroom);
+                dislike.Add(FoodType.intestine);
                 break;
             case 4://bro
-                prefer.Add(Foods.luncheonMeat);
-                prefer.Add(Foods.lotus);
+                prefer.Add(FoodType.luncheonMeat);
+                prefer.Add(FoodType.lotus);
 
-                dislike.Add(Foods.tofu);
-                dislike.Add(Foods.beafball);
-                dislike.Add(Foods.egg);
-                dislike.Add(Foods.sausage);
+                dislike.Add(FoodType.tofu);
+                dislike.Add(FoodType.beafball);
+                dislike.Add(FoodType.egg);
+                dislike.Add(FoodType.sausage);
                 break;
             case 5://sis
-                prefer.Add(Foods.tofu);
-                prefer.Add(Foods.lotus);
+                prefer.Add(FoodType.tofu);
+                prefer.Add(FoodType.lotus);
 
-                dislike.Add(Foods.beaf);
-                dislike.Add(Foods.shrimp);
-                dislike.Add(Foods.intestine);
-                dislike.Add(Foods.sausage);
+                dislike.Add(FoodType.beaf);
+                dislike.Add(FoodType.shrimp);
+                dislike.Add(FoodType.intestine);
+                dislike.Add(FoodType.sausage);
                 break;
         }
     }
 }
 
-public class Foods
+public class FoodType
 {
     public static int ricecake = 0;
     public static int tofu = 1;
