@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class PlayerInfo
 {
-    public int appetite = 1;
+    private float appetite = 1.0f;
+    public int combo = 0;
     public int id;// 位置信息 0-左上 1-右上 2-左下 3-右下
-    public int type;
+    public Characters type;
     public int repletion = 0;
     public List<int> prefer;
     public List<int> dislike;
@@ -15,18 +16,40 @@ public class PlayerInfo
     public int robTimes = 0;
     public int attackTime = 0;
     private List<int> actRecord;
+    private int lastFood = -1;
+    int[] foodSatie;
 
-    // Start is called before the first frame update
-    public PlayerInfo(int _id, int _type)
+    public PlayerInfo(int _id, Characters characters)
     {
         id = _id;
-        type = _type;
+        type = characters;
         prefer = new List<int>();
         actRecord = new List<int>();
         dislike = new List<int>();
         for (int i = 0; i < 4; i++) actRecord.Add(0);
+<<<<<<< HEAD
+        setPrefers(characters);
+=======
         setPrefers(type);
+
+        //foodSatie = new int[20];
+        foodSatie = new int[14] { 5,3,1,2,5,5,4,2,3,3,2,1,4,2 };
+
     }
+
+    public void beVomitted()
+    {
+        combo = 0;
+        appetite = 1.0f;
+
+>>>>>>> a510c19978ad213e2135ad8fbead4e8239973dd3
+    }
+
+    public void vomit(int delta)
+    {
+        repletion -= delta;
+    }
+
 
     public void attackCount(int opponent)
     {
@@ -35,7 +58,7 @@ public class PlayerInfo
     public List<string> getPreferLists()
     {
         List<string> res = new List<string>();
-        for(int i = 0; i < prefer.Count; i++)
+        for (int i = 0; i < prefer.Count; i++)
         {
             res.Add(getFoodNameById(prefer[i]));
         }
@@ -58,6 +81,50 @@ public class PlayerInfo
         else return "?";
     }
 
+    public int updateInfo(int foodtype_)//返回加减的数值
+    {
+        int delta = 0;
+        if (lastFood == -1)
+        {
+            delta = foodSatie[foodtype_] + (int)(getPrefer(foodtype_));
+            repletion += delta;
+            lastFood = foodtype_;
+            combo++;
+            
+        }
+        else if(foodtype_==lastFood)
+        {
+            float buff = 1.0f;
+            combo++;
+            if (combo > 3)
+            {
+                buff += 0.5f * (combo - 3);
+            }
+            delta = (int)(buff * (foodSatie[foodtype_] + (int)(getPrefer(foodtype_))));
+            repletion += delta;
+            lastFood = foodtype_;
+        }
+        else
+        {
+            combo = 1;
+            delta = foodSatie[foodtype_] + (int)(getPrefer(foodtype_));
+            repletion += delta;
+            lastFood = foodtype_;
+        }
+
+        return delta;
+    }
+
+    public int getCombo()
+    {
+        return combo;
+    }
+
+    public int getRepletion()
+    {
+        return repletion;
+    }
+
     public int getGreatestOpponent()
     {
         int res = 0;
@@ -68,9 +135,9 @@ public class PlayerInfo
 
     public float getPrefer(int food)
     {
-        if(prefer.Exists((int s) => s == food ? true : false))
+        if (prefer.Exists((int s) => s == food ? true : false))
         {
-            return 2.0f;
+            return 1.0f;
         }
         else if (dislike.Exists((int s) => s == food ? true : false))
         {
@@ -78,11 +145,11 @@ public class PlayerInfo
         }
         return 0.0f;
     }
-    public void setPrefers(int no)
+    public void setPrefers(Characters type)
     {
-        switch (no)
+        switch (type)
         {
-            case 0://grandpa
+            case Characters.Grandpa:
                 prefer.Add(FoodType.tofu);
                 prefer.Add(FoodType.egg);
 
@@ -91,7 +158,7 @@ public class PlayerInfo
                 dislike.Add(FoodType.sausage);
                 dislike.Add(FoodType.lotus);
                 break;
-            case 1://grandma
+             case Characters.Grandma:
                 prefer.Add(FoodType.shrimp);
                 prefer.Add(FoodType.luncheonMeat);
 
@@ -102,7 +169,7 @@ public class PlayerInfo
 
 
                 break;
-            case 2://pa
+            case Characters.Father:
                 prefer.Add(FoodType.mushroom);
                 prefer.Add(FoodType.intestine);
 
@@ -111,7 +178,7 @@ public class PlayerInfo
                 dislike.Add(FoodType.luncheonMeat);
                 dislike.Add(FoodType.eggDumpling);
                 break;
-            case 3://ma
+            case Characters.Mother:
                 prefer.Add(FoodType.luncheonMeat);
                 prefer.Add(FoodType.egg);
 
@@ -120,7 +187,7 @@ public class PlayerInfo
                 dislike.Add(FoodType.mushroom);
                 dislike.Add(FoodType.intestine);
                 break;
-            case 4://bro
+            case Characters.Brother:
                 prefer.Add(FoodType.luncheonMeat);
                 prefer.Add(FoodType.lotus);
 
@@ -129,7 +196,7 @@ public class PlayerInfo
                 dislike.Add(FoodType.egg);
                 dislike.Add(FoodType.sausage);
                 break;
-            case 5://sis
+            case Characters.Sister:
                 prefer.Add(FoodType.tofu);
                 prefer.Add(FoodType.lotus);
 
@@ -159,16 +226,21 @@ public class FoodType
     public static int sausage = 12;
     public static int lotus = 13;
 
+    public static int getAFood()
+    {
+        int res = Random.Range(0, 14);
+        return res;
+    }
 }
 
-public class Characters
+public enum Characters
 {
-    public static int grandpa = 0;
-    public static int grandma = 1;
-    public static int father = 2;
-    public static int mother = 3;
-    public static int brother = 4;
-    public static int sister = 5;
+    Grandpa=0,
+    Grandma = 1,
+    Father = 2,
+    Mother = 3,
+    Brother = 4,
+    Sister = 5
 }
 
 public class FoodSatie
