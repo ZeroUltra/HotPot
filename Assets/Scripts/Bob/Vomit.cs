@@ -21,6 +21,7 @@ public class Vomit : MonoBehaviour
     ArrayList pointerAtSelf = new ArrayList();
     bool flag;
     GameObject shit;
+    PlayerInfo enemyInfo;
 
     // Start is called before the first frame update
     void Start()
@@ -54,18 +55,16 @@ public class Vomit : MonoBehaviour
             enemy[index].GetComponent<Vomit>().Pointed(pointer);
         }
 
-        if (Input.GetKeyDown(vomitKey))
+        enemyInfo = enemy[index].GetComponent<PlayerInfo>();
+
+
+        if (Input.GetKeyDown(vomitKey) && enemyInfo.getRepletion() >= 5)
         {
             shit = Instantiate(shitPrefab, vomitOffset.position, vomitOffset.rotation) as GameObject;
             Debug.Log(shit.transform.position);
             Debug.Log(enemy[index].transform.position);
 
             flag = true;
-
-            //shit.transform.position = Vector3.MoveTowards(shit.transform.position, enemy[index].transform.position, speed * Time.fixedDeltaTime);
-            Debug.Log(speed * Time.deltaTime);
-
-            //need to call a method from playerInfo
 
         }
 
@@ -74,8 +73,11 @@ public class Vomit : MonoBehaviour
             shit.transform.position = Vector3.MoveTowards(shit.transform.position, enemy[index].transform.position, speed * Time.fixedDeltaTime);
         }
 
-        if ( shit != null && shit.transform.position == enemy[index].transform.position)
+        //vomit splash on face
+        if (shit != null && shit.transform.position == enemy[index].transform.position && flag)
         {
+            enemyInfo.beVomitted();
+            enemyInfo.vomit(5);
             flag = false;
             Destroy(shit, 2.0f);
         }

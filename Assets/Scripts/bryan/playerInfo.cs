@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class PlayerInfo
 {
-    public int appetite = 1;
+    private float appetite = 1.0f;
+    public int combo = 0;
     public int id;// 位置信息 0-左上 1-右上 2-左下 3-右下
     public int type;
     public int repletion = 0;
@@ -15,6 +16,8 @@ public class PlayerInfo
     public int robTimes = 0;
     public int attackTime = 0;
     private List<int> actRecord;
+    private int lastFood = -1;
+    int[] foodSatie;
 
     // Start is called before the first frame update
     public PlayerInfo(int _id, int _type)
@@ -26,7 +29,24 @@ public class PlayerInfo
         dislike = new List<int>();
         for (int i = 0; i < 4; i++) actRecord.Add(0);
         setPrefers(type);
+
+        //foodSatie = new int[20];
+        foodSatie = new int[14] { 5,3,1,2,5,5,4,2,3,3,2,1,4,2 };
+
     }
+
+    public void beVomitted()
+    {
+        combo = 0;
+        appetite = 1.0f;
+
+    }
+
+    public void vomit(int delta)
+    {
+        repletion -= delta;
+    }
+
 
     public void attackCount(int opponent)
     {
@@ -58,6 +78,50 @@ public class PlayerInfo
         else return "?";
     }
 
+    public int updateInfo(int foodtype_)//返回加减的数值
+    {
+        int delta = 0;
+        if (lastFood == -1)
+        {
+            delta = foodSatie[foodtype_] + (int)(getPrefer(foodtype_));
+            repletion += delta;
+            lastFood = foodtype_;
+            combo++;
+            
+        }
+        else if(foodtype_==lastFood)
+        {
+            float buff = 1.0f;
+            combo++;
+            if (combo > 3)
+            {
+                buff += 0.5f * (combo - 3);
+            }
+            delta = (int)(buff * (foodSatie[foodtype_] + (int)(getPrefer(foodtype_))));
+            repletion += delta;
+            lastFood = foodtype_;
+        }
+        else
+        {
+            combo = 1;
+            delta = foodSatie[foodtype_] + (int)(getPrefer(foodtype_));
+            repletion += delta;
+            lastFood = foodtype_;
+        }
+
+        return delta;
+    }
+
+    public int getCombo()
+    {
+        return combo;
+    }
+
+    public int getRepletion()
+    {
+        return repletion;
+    }
+
     public int getGreatestOpponent()
     {
         int res = 0;
@@ -70,7 +134,7 @@ public class PlayerInfo
     {
         if(prefer.Exists((int s) => s == food ? true : false))
         {
-            return 2.0f;
+            return 1.0f;
         }
         else if (dislike.Exists((int s) => s == food ? true : false))
         {
@@ -159,6 +223,11 @@ public class FoodType
     public static int sausage = 12;
     public static int lotus = 13;
 
+    public static int getAFood()
+    {
+        int res = Random.Range(0, 14);
+        return res;
+    }
 }
 
 public class Characters
