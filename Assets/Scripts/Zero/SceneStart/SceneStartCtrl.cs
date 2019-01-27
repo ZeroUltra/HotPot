@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 /// <summary>
 /// 角色选择
@@ -9,6 +10,7 @@ using UnityEngine.UI;
 public class SceneStartCtrl : MonoBehaviour
 {
     public RoleItem[] roleItems;
+    public Image curtain;
 
     private void Update()
     {
@@ -78,6 +80,12 @@ public class SceneStartCtrl : MonoBehaviour
     public void PlayBtnClick()
     {
         bool isAllConfirm = true;
+        if(GameManager.RoleCount < 2)
+        {
+            Debug.Log("提示人数不足");
+            return;
+        }
+
         for (int i = 0; i < GameManager.RoleCount; i++)
         {
             if (!roleItems[i].IsConfirm)
@@ -88,8 +96,13 @@ public class SceneStartCtrl : MonoBehaviour
         }
         if (isAllConfirm)
         {
-
-            GameManager.Instance.LoadScene("03Main");
+            // 屏幕变黑
+            curtain.gameObject.SetActive(true);
+            Tweener tw = curtain.DOFade(1.0f, 0.5f);
+            tw.OnComplete(() =>
+            {
+                GameManager.Instance.LoadScene("03Main");
+            });
         }
         else
         {
