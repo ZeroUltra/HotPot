@@ -18,6 +18,7 @@ public class PlayerInfo
     private List<int> actRecord;
     private int lastFood = -1;
     int[] foodSatie;
+    public int glass = 0;
 
     public PlayerInfo(int _id, Characters characters)
     {
@@ -50,6 +51,17 @@ public class PlayerInfo
         repletion -= delta;
     }
 
+
+    public void addGlass(int delta)
+    {
+        glass += delta;
+
+    }
+
+    public int getGlass()
+    {
+        return glass;
+    }
 
     public void attackCount(int opponent)
     {
