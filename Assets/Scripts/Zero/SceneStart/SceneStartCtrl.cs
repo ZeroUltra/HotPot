@@ -25,17 +25,17 @@ public class SceneStartCtrl : MonoBehaviour
             ChooseRole(1);
         }
         //玩家二选择
-        if (Input.GetKeyDown(KeyCode.H))
+        if (Input.GetKeyDown(KeyCode.J))
         {
             ChooseRole(2);
         }
         //玩家三选择
-        if (Input.GetKeyDown(KeyCode.K))
+        if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             ChooseRole(3);
         }
         //玩家四选择
-        if (Input.GetKeyDown(KeyCode.Keypad1))
+        if (Input.GetKeyDown(KeyCode.Keypad7))
         {
             ChooseRole(4);
         }
@@ -44,15 +44,15 @@ public class SceneStartCtrl : MonoBehaviour
         {
             ConfirmRoleItem(1);
         }
-        if (Input.GetKeyDown(KeyCode.J))
+        if (Input.GetKeyDown(KeyCode.K))
         {
             ConfirmRoleItem(2);
         }
-        if (Input.GetKeyDown(KeyCode.L))
+        if (Input.GetKeyDown(KeyCode.DownArrow))
         {
             ConfirmRoleItem(3);
         }
-        if (Input.GetKeyDown(KeyCode.Keypad2))
+        if (Input.GetKeyDown(KeyCode.Keypad8))
         {
             ConfirmRoleItem(4);
         }
