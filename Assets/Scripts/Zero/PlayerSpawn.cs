@@ -25,12 +25,12 @@ public class PlayerSpawn : MonoBehaviour
 
             //Init UI info
             PlayerUIInfo playerUIInfo = UISpawn.GetChild(i).GetComponent<PlayerUIInfo>();
-            playerUIInfo.Init(role.character);
             playerUIInfo.gameObject.SetActive(true);
             RectTransform rectTransform = (playerUIInfo.transform as RectTransform);
             rectTransform.localScale = Vector3.zero;
             rectTransform.DOScale(Vector3.one, 0.8f).SetEase(Ease.OutBack).SetDelay(i*0.3f);
             role.Init(i, GameManager.Instance.roles[i], playerUIInfo);
+            playerUIInfo.Init(role.character);
         }
 
     }
