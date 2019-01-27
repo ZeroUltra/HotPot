@@ -32,8 +32,7 @@ public class PlayerSpawn : MonoBehaviour
             rectTransform.DOScale(Vector3.one, 0.8f).SetEase(Ease.OutBack).SetDelay(i * 0.3f);
 
             role.Init(i, GameManager.Instance.roles[i], playerUIInfo);
-            //Sprite sprite = Resources.Load<Sprite>("Roleavatar/" + role.character.ToString());
-            //playerUIInfo.Init(role.character, sprite);
+      
         }
 
     }
