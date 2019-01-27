@@ -2,40 +2,76 @@
 using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
-
+using System;
 /// <summary>
 /// 挂载在角色手臂下
 /// 伸手动作、夹食物
 /// </summary>
 public class Arm : MonoBehaviour
 {
+    private Dictionary<int, KeyCode> DicIdKeyCode = new Dictionary<int, KeyCode>
+    {
+        [0] = KeyCode.Q,
+        [1] = KeyCode.J,
+        [2] = KeyCode.L,
+        [3] = KeyCode.Keypad2,
+    };
+    /// <summary>
+    /// 这个不能写在这
+    /// </summary>
+    private Dictionary<Characters, float> DicIdSpeed = new Dictionary<Characters, float>
+    {
+        [Characters.Grandma] = 30f,
+        [Characters.Grandpa] = 29f,
+        [Characters.Father] = 42f,
+        [Characters.Mother] = 44f,
+        [Characters.Brother] = 46f,
+        [Characters.Sister] = 38f,
+    };
     [SerializeField]
     KeyCode fetchKey;
-    [SerializeField]
-    int id;
 
     float rotSpeed = 45.0f;
-    float curAngle = 0.0f;
-    float maxAngle = 45.0f;
+    float curAngle = 0;
+    float maxAngle = 45;
     float timer; // 从“伸手”到“触碰事物”的时间间隔。
 
     Sequence fetchFoodSeq;
     bool isIdle;
 
     Transform hand;
-    BoxCollider2D collider;
+    
+    private SpriteRenderer spriteRenderer;
+    private BoxCollider2D boxcollider;
+    private float rate;
+    
+    public event Action<int> OnEat;
 
+    /// <summary>
+    /// 根据id设置伸手出发按键
+    /// </summary>
+    /// <param name="id"></param>
+    public void Init(int id,Characters characters)
+    {
+        this.fetchKey = DicIdKeyCode[id];
+        this.rotSpeed = DicIdSpeed[characters];
+    }
     void Start()
     {
+        spriteRenderer = GetComponent<SpriteRenderer>();
         timer = 0;
         isIdle = true;
         transform.localEulerAngles = Vector3.zero;
-        collider = GetComponent<BoxCollider2D>();
-        hand = transform.GetChild(0);
+        boxcollider = GetComponent<BoxCollider2D>();
+        rate = boxcollider.size.x / boxcollider.offset.x;
     }
 
     void Update()
     {
+        //随着图片的宽度 更改boxcollider
+        boxcollider.size = spriteRenderer.size;
+        boxcollider.offset = new Vector2(boxcollider.size.x/rate, boxcollider.offset.y);
+
         timer += Time.deltaTime;
 
         if (!isIdle)
@@ -50,11 +86,10 @@ public class Arm : MonoBehaviour
     void Fetch()
     {
         timer = 0.0f;
-
         // 手臂伸长动画。
         fetchFoodSeq = DOTween.Sequence();
-        fetchFoodSeq.Append(transform.DOScaleY(4.0f, 1.0f).SetEase(Ease.Linear));
-        Tweener back = transform.DOScaleY(1.48f, 1.0f).SetEase(Ease.Linear);
+        fetchFoodSeq.Append(DOTween.To(() => spriteRenderer.size, x => spriteRenderer.size = x, new Vector2(5.20f, spriteRenderer.size.y), 1f).SetEase(Ease.Linear));
+        Tweener back = DOTween.To(() => spriteRenderer.size, x => spriteRenderer.size = x, new Vector2(2f, spriteRenderer.size.y), 1f).SetEase(Ease.Linear);
         back.OnComplete(() => { isIdle = true; });
         fetchFoodSeq.Append(back);
 
@@ -74,24 +109,27 @@ public class Arm : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collider.enabled == false)// 防止夹取多个食物
+        if (boxcollider.enabled == false)// 防止夹取多个食物
             return;
         Food food = collision.gameObject.GetComponent<Food>();
         if (food != null)
         {
-            food.target = hand;
+            food.transform.SetParent(this.transform);   
             fetchFoodSeq.Kill();
-            Tweener back = transform.DOScaleY(1.48f, timer).SetEase(Ease.Linear);
-            collider.enabled = false; // 防止夹取多个食物
-            back.OnComplete(() => {
+           // Tweener back = transform.DOScaleY(1.48f, timer).SetEase(Ease.Linear);
+            Tweener back = DOTween.To(() => spriteRenderer.size, x => spriteRenderer.size = x, new Vector2(2f, spriteRenderer.size.y), 1f).SetEase(Ease.Linear);
+            back.OnUpdate(()=>
+            {
+                food.Follow(spriteRenderer.size.x);
+            });
+            boxcollider.enabled = false; // 防止夹取多个食物
+            back.OnComplete(() =>
+            {
                 isIdle = true;
-                collider.enabled = true;
-                if (food.target == hand)
+                boxcollider.enabled = true;
+                if (transform.childCount > 0)
                 {
-                    // 更新角色饱食度等
-                    //Stats.UpdateInfo(id, Stats.playerInfos[id].getFoodSatie(),)
-                    Stats.UpdateInfo(id, food.foodType);
-
+                    if (OnEat != null) OnEat.Invoke(food.foodType);
                     Destroy(food.gameObject); // 或添加食用动作？
                     Debug.Log("饱食度++");
                 }

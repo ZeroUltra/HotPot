@@ -19,7 +19,7 @@ public class Stats : MonoBehaviour
     {
         for (int i = 0; i < 4; i++)
         {
-            playerInfos.Add(new PlayerInfo(i, 1));
+            playerInfos.Add(new PlayerInfo(i, Characters.Brother));
         }
     }
 
@@ -35,8 +35,3 @@ public class Stats : MonoBehaviour
     }
 }
 
-//public class PlayerInfo
-//{
-//    public int repletion;
-//    public int appetiet;
-//}

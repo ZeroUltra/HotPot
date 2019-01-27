@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class PlayerInfo
 {
-    private float appetite = 1.0f;
+    public float appetite = 1.0f;
     public int combo = 0;
     public int id;// 位置信息 0-左上 1-右上 2-左下 3-右下
     public Characters type;
-    public int repletion = 0;
+    public int repletion = 0;  //饱食度
     public List<int> prefer;
     public List<int> dislike;
     //public Arm arm;
@@ -27,9 +27,9 @@ public class PlayerInfo
         actRecord = new List<int>();
         dislike = new List<int>();
         for (int i = 0; i < 4; i++) actRecord.Add(0);
-<<<<<<< HEAD
+
         setPrefers(characters);
-=======
+
         setPrefers(type);
 
         //foodSatie = new int[20];
@@ -42,7 +42,7 @@ public class PlayerInfo
         combo = 0;
         appetite = 1.0f;
 
->>>>>>> a510c19978ad213e2135ad8fbead4e8239973dd3
+
     }
 
     public void vomit(int delta)
@@ -55,6 +55,10 @@ public class PlayerInfo
     {
         actRecord[opponent]++;
     }
+    /// <summary>
+    /// 获取喜欢的食物
+    /// </summary>
+    /// <returns></returns>
     public List<string> getPreferLists()
     {
         List<string> res = new List<string>();

@@ -4,13 +4,13 @@ using UnityEngine;
 
 public class FoodGenerator : MonoBehaviour
 {
+    public Vector2 aeraV2 = new Vector2(-10, 10);
+    public Vector2 nextGenRateTime = new Vector2(0.5f, 3f);
+    private float nextGenerateTime;
+
     public GameObject[] foodPrefs;
-    public float maxRange;
-
-    float nextGenerateTime; 
-
-    float timer;
-
+    public List<Food> foodList = new List<Food>();
+    private float timer;
     void Start()
     {
         timer = 0;
@@ -27,12 +27,14 @@ public class FoodGenerator : MonoBehaviour
     void Generate()
     {
         timer = 0;
-        nextGenerateTime = Random.Range(0.5f, 3f);
-        Vector3 dir = new Vector3(Random.Range(-10.0f, 10.0f), Random.Range(-10.0f, 10.0f),0).normalized;
-        Debug.Log(dir);
+        nextGenerateTime = Random.Range(nextGenRateTime.x, nextGenRateTime.y);
+        Vector3 dir = new Vector3(Random.Range(aeraV2.x, aeraV2.y), Random.Range(aeraV2.x, aeraV2.y), 0).normalized;
 
         Food newFood = Instantiate(foodPrefs[0]).GetComponent<Food>();
+
         newFood.transform.parent = transform;
-        newFood.transform.position = transform.position + dir * Random.Range(0,maxRange);
+        newFood.transform.position = transform.position + dir;
+
+        foodList.Add(newFood);
     }
 }

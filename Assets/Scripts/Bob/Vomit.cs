@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class Vomit : MonoBehaviour
 {
-
-    //public GameObject[] enemy = new GameObject[3];
     public Transform[] enemyPointerOffset = new Transform[3];
     public GameObject[] enemy = new GameObject[3];
     public KeyCode switchKey;
@@ -23,7 +21,6 @@ public class Vomit : MonoBehaviour
     GameObject shit;
     PlayerInfo enemyInfo;
 
-    // Start is called before the first frame update
     void Start()
     {
 
@@ -38,7 +35,7 @@ public class Vomit : MonoBehaviour
         flag = false;
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
         if (Input.GetKeyDown(switchKey) && flag == false)
@@ -80,8 +77,6 @@ public class Vomit : MonoBehaviour
             flag = false;
             Destroy(shit, 2.0f);
         }
-        
-
         ArrangePos();
 
     }

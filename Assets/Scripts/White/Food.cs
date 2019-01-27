@@ -4,16 +4,13 @@ using UnityEngine;
 
 public class Food : MonoBehaviour
 {
-    [HideInInspector]
-    public Transform target; // 食物跟随目标(角色的手掌位置)
 
     public int foodType;
-
+    private bool isFollow = false; 
     void Awake()
     {
         // random
         foodType = FoodType.beaf;
-        target = null;
     }
 
     public void SetFoodType(int _foodType)
@@ -23,9 +20,9 @@ public class Food : MonoBehaviour
         // 添加对应的图片
     }
 
-    void LateUpdate()
+    public void Follow(float offx)
     {
-        if (target != null)
-            transform.position = target.transform.position;
+        transform.localPosition = new Vector3(offx,0,0);
     }
+   
 }
