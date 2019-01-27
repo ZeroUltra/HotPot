@@ -64,14 +64,20 @@ public class RoleItem : MonoBehaviour
         canChoose = true;
         //roleAvatar = Resources.LoadAll<Sprite>("Roleavatar");
         roleImage = Resources.LoadAll<Sprite>("UI/startScene/role");
-        audioSource = gameObject.AddComponent<AudioSource>();
 
+        Sprite shadow = Resources.Load<Sprite>("UI/startScene/texture/shadow");
+        audioSource = gameObject.AddComponent<AudioSource>();
 
         toggle = transform.GetChild(0).GetComponent<Image>();
         image = transform.GetChild(1).GetComponent<Image>();
         hint = transform.GetChild(2).gameObject;
 
-
+        // ºÚÓ°
+        image.sprite = shadow;
+        image.SetNativeSize();
+        image.transform.DOScale(0.13f, 0);
+        image.DOFade(0, 0);
+        Tweener tw = image.DOFade(1, 0.3f);
 
         //toggle.isOn = false;
         //toggle.gameObject.SetActive(false);
@@ -80,7 +86,6 @@ public class RoleItem : MonoBehaviour
 
     public void Init()
     {
-        image.enabled = true;
         hint.SetActive(true);
         Index = 0;
 
@@ -110,7 +115,7 @@ public class RoleItem : MonoBehaviour
 
         IsConfirm = true;
 
-
+        hint.SetActive(false);
         audioSource.clip = confirmAudio;
         audioSource.loop = false;
         audioSource.Play();
