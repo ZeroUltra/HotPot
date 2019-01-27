@@ -30,6 +30,7 @@ public class RoleItem : MonoBehaviour
             float localX = image.transform.localPosition.x;
             float offsetX = -50.0f;
             image.transform.position += new Vector3(offsetX, 0, 0);
+            image.transform.DOScale(0.25f, 0);
             image.DOFade(0, 0);
 
             // 出现新的立绘，从左侧渐入
@@ -40,6 +41,11 @@ public class RoleItem : MonoBehaviour
                 canChoose = true;
             });
             image.transform.DOLocalMoveX(localX, 0.3f).SetEase(Ease.Linear);
+
+            // 播放switch音效
+            audioSource.clip = switchAudio;
+            audioSource.loop = false;
+            audioSource.Play();
         }
     }
 
@@ -48,11 +54,17 @@ public class RoleItem : MonoBehaviour
     public Sprite playerId;
     private GameObject hint;
     private Image toggle;
+
+    public AudioClip switchAudio;
+    public AudioClip confirmAudio;
+    AudioSource audioSource;
+
     void Start()
     {
         canChoose = true;
         //roleAvatar = Resources.LoadAll<Sprite>("Roleavatar");
         roleImage = Resources.LoadAll<Sprite>("UI/startScene/role");
+        audioSource = gameObject.AddComponent<AudioSource>();
 
 
         toggle = transform.GetChild(0).GetComponent<Image>();
@@ -97,6 +109,12 @@ public class RoleItem : MonoBehaviour
         toggle.transform.DOScale(Vector3.one * 0.8f, 0.5f);
 
         IsConfirm = true;
+
+
+        audioSource.clip = confirmAudio;
+        audioSource.loop = false;
+        audioSource.Play();
+
         return (Characters)Index;
     }
 }
