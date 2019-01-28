@@ -11,15 +11,32 @@ public class SceneStartCtrl : MonoBehaviour
 {
     public RoleItem[] roleItems;
     public Image curtain;
+    public Button gotitBtn;
+    public GameObject guide;
+
+    void Start()
+    {
+        gotitBtn.onClick.AddListener(() =>
+        {
+            // 屏幕变黑
+            curtain.gameObject.SetActive(true);
+            Tweener tw = curtain.DOFade(1.0f, 0.5f);
+            tw.OnComplete(() =>
+            {
+                GameManager.Instance.LoadScene("03Main");
+            });
+        });
+    }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (GameManager.RoleCount < 4)
         {
-            GameManager.RoleCount++;
-            roleItems[GameManager.RoleCount - 1].Init();
-            //GameManager.Instance.roles=new List<Characters>[]
-            Debug.Log(GameManager.RoleCount);
+            if (Input.GetKeyDown(KeyCode.Q))
+            {
+                GameManager.RoleCount++;
+                roleItems[GameManager.RoleCount - 1].Init();
+            }
         }
         //玩家一选择
         if (Input.GetKeyDown(KeyCode.A))
@@ -80,7 +97,7 @@ public class SceneStartCtrl : MonoBehaviour
     public void PlayBtnClick()
     {
         bool isAllConfirm = true;
-        if(GameManager.RoleCount < 2)
+        if (GameManager.RoleCount < 2)
         {
             Debug.Log("提示人数不足");
             return;
@@ -96,13 +113,7 @@ public class SceneStartCtrl : MonoBehaviour
         }
         if (isAllConfirm)
         {
-            // 屏幕变黑
-            curtain.gameObject.SetActive(true);
-            Tweener tw = curtain.DOFade(1.0f, 0.5f);
-            tw.OnComplete(() =>
-            {
-                GameManager.Instance.LoadScene("03Main");
-            });
+            guide.SetActive(true);
         }
         else
         {

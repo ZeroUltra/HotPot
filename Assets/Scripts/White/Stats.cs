@@ -27,7 +27,7 @@ public class Stats : MonoBehaviour
     {
         PlayerInfo info = playerInfos[id];
         // update info
-        info.repletion += 10;// test
+        info.Repletion += 10;// test
 
         // if(info.repletion >= 100)
         //     gameover

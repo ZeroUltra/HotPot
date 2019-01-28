@@ -1,10 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using DG.Tweening;
 
 public class PageMotion : MonoBehaviour
 {
+    public Image curtain;
+
     float stepLen = -15.0f;
     float steps = 0;
 
@@ -27,11 +30,19 @@ public class PageMotion : MonoBehaviour
 
         if(steps > 3)
         {
-            Debug.Log("game over");
+            curtain.gameObject.SetActive(true);
+            Tweener t = curtain.DOFade(1.0f, 0.5f);
+            t.OnComplete(() =>
+            {
+                GameManager.Instance.LoadScene("00Init");
+            });
             return;
         }
 
-        Tweener tw = transform.DOLocalMoveX(15.0f + steps * stepLen, 1f).SetEase(Ease.Linear);
+        float offset = 0;
+        if (steps == 3)
+            offset = -1.3f;
+        Tweener tw = transform.DOLocalMoveX(15.0f + steps * stepLen + offset, 1f).SetEase(Ease.Linear);
         tw.OnComplete(() =>
         {
             isMoving = false;

@@ -18,7 +18,6 @@ public class RoleItem : MonoBehaviour
         {
             // ¸Ä±äÍ·ÏñÍ¼Æ¬
             index = value;
-            Debug.Log(index);
             if (index > roleImage.Length - 1)
             { index = 0; }
 

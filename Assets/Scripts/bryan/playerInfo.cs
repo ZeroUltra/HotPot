@@ -1,14 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using System;
 public class PlayerInfo
 {
+    public event Action OnVomit;
     public float appetite = 1.0f;
     public int combo = 0;
     public int id;// 位置信息 0-左上 1-右上 2-左下 3-右下
     public Characters type;
-    public int repletion = 0;  //饱食度
+    private int repletion = 0;  //饱食度
     public List<int> prefer;
     public List<int> dislike;
     //public Arm arm;
@@ -19,6 +20,16 @@ public class PlayerInfo
     private int lastFood = -1;
     int[] foodSatie;
     public int glass = 0;
+
+    public int Repletion
+    {
+        get => repletion; set
+        {
+            repletion = value;
+            if (repletion > 100)
+                repletion = 100;
+        }
+    }
 
     public PlayerInfo(int _id, Characters characters)
     {
@@ -34,7 +45,7 @@ public class PlayerInfo
         setPrefers(type);
 
         //foodSatie = new int[20];
-        foodSatie = new int[14] { 5,3,1,2,5,5,4,2,3,3,2,1,4,2 };
+        foodSatie = new int[14] { 5, 3, 1, 2, 5, 5, 4, 2, 3, 3, 2, 1, 4, 2 };
 
     }
 
@@ -48,7 +59,8 @@ public class PlayerInfo
 
     public void vomit(int delta)
     {
-        repletion -= delta;
+        Repletion -= delta;
+        OnVomit.Invoke();
     }
 
 
@@ -103,12 +115,12 @@ public class PlayerInfo
         if (lastFood == -1)
         {
             delta = foodSatie[foodtype_] + (int)(getPrefer(foodtype_));
-            repletion += delta;
+            Repletion += delta;
             lastFood = foodtype_;
             combo++;
-            
+
         }
-        else if(foodtype_==lastFood)
+        else if (foodtype_ == lastFood)
         {
             float buff = 1.0f;
             combo++;
@@ -117,18 +129,18 @@ public class PlayerInfo
                 buff += 0.5f * (combo - 3);
             }
             delta = (int)(buff * (foodSatie[foodtype_] + (int)(getPrefer(foodtype_))));
-            repletion += delta;
+            Repletion += delta;
             lastFood = foodtype_;
         }
         else
         {
             combo = 1;
             delta = foodSatie[foodtype_] + (int)(getPrefer(foodtype_));
-            repletion += delta;
+            Repletion += delta;
             lastFood = foodtype_;
         }
 
-        return delta;
+        return Repletion;
     }
 
     public int getCombo()
@@ -138,7 +150,7 @@ public class PlayerInfo
 
     public int getRepletion()
     {
-        return repletion;
+        return Repletion;
     }
 
     public int getGreatestOpponent()
@@ -174,7 +186,7 @@ public class PlayerInfo
                 dislike.Add(FoodType.sausage);
                 dislike.Add(FoodType.lotus);
                 break;
-             case Characters.Grandma:
+            case Characters.Grandma:
                 prefer.Add(FoodType.shrimp);
                 prefer.Add(FoodType.luncheonMeat);
 
@@ -244,14 +256,14 @@ public class FoodType
 
     public static int getAFood()
     {
-        int res = Random.Range(0, 14);
+        int res = UnityEngine.Random.Range(0, 14);
         return res;
     }
 }
 
 public enum Characters
 {
-    Grandpa=0,
+    Grandpa = 0,
     Grandma = 1,
     Father = 2,
     Mother = 3,

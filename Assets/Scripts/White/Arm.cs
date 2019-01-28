@@ -11,10 +11,10 @@ public class Arm : MonoBehaviour
 {
     private Dictionary<int, KeyCode> DicIdKeyCode = new Dictionary<int, KeyCode>
     {
-        [0] = KeyCode.Q,
+        [0] = KeyCode.A,
         [1] = KeyCode.J,
-        [2] = KeyCode.L,
-        [3] = KeyCode.Keypad2,
+        [2] = KeyCode.DownArrow,
+        [3] = KeyCode.Keypad7,
     };
     /// <summary>
     /// 这个不能写在这
@@ -33,28 +33,29 @@ public class Arm : MonoBehaviour
 
     float rotSpeed = 45.0f;
     float curAngle = 0;
-    float maxAngle = 45;
+    float maxAngle = 30;
     float timer; // 从“伸手”到“触碰事物”的时间间隔。
 
     Sequence fetchFoodSeq;
     bool isIdle;
 
     Transform hand;
-    
+
     private SpriteRenderer spriteRenderer;
     private BoxCollider2D boxcollider;
     private float rate;
-    
+
     public event Action<int> OnEat;
 
     /// <summary>
     /// 根据id设置伸手出发按键
     /// </summary>
     /// <param name="id"></param>
-    public void Init(int id,Characters characters)
+    public void Init(int id, Characters characters)
     {
         this.fetchKey = DicIdKeyCode[id];
         this.rotSpeed = DicIdSpeed[characters];
+        GetComponent<SpriteRenderer>().sprite = Resources.Load<Sprite>("hand/" + characters.ToString());
     }
     void Start()
     {
@@ -70,7 +71,7 @@ public class Arm : MonoBehaviour
     {
         //随着图片的宽度 更改boxcollider
         boxcollider.size = spriteRenderer.size;
-        boxcollider.offset = new Vector2(boxcollider.size.x/rate, boxcollider.offset.y);
+        boxcollider.offset = new Vector2(boxcollider.size.x / rate, boxcollider.offset.y);
 
         timer += Time.deltaTime;
 
@@ -106,21 +107,21 @@ public class Arm : MonoBehaviour
 
         transform.localEulerAngles = new Vector3(0, 0, curAngle);
     }
-
+    private Food pickFood;
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (boxcollider.enabled == false)// 防止夹取多个食物
             return;
-        Food food = collision.gameObject.GetComponent<Food>();
-        if (food != null)
+        pickFood = collision.gameObject.GetComponent<Food>();
+        if (pickFood != null)
         {
-            food.transform.SetParent(this.transform);   
+            pickFood.transform.SetParent(this.transform);
             fetchFoodSeq.Kill();
-           // Tweener back = transform.DOScaleY(1.48f, timer).SetEase(Ease.Linear);
-            Tweener back = DOTween.To(() => spriteRenderer.size, x => spriteRenderer.size = x, new Vector2(2f, spriteRenderer.size.y), 1f).SetEase(Ease.Linear);
-            back.OnUpdate(()=>
+            // Tweener back = transform.DOScaleY(1.48f, timer).SetEase(Ease.Linear);
+            Tweener back = DOTween.To(() => spriteRenderer.size, x => spriteRenderer.size = x, new Vector2(2f, spriteRenderer.size.y), 1.1f).SetEase(Ease.Linear);
+            back.OnUpdate(() =>
             {
-                food.Follow(spriteRenderer.size.x);
+                pickFood.Follow(spriteRenderer.size.x);
             });
             boxcollider.enabled = false; // 防止夹取多个食物
             back.OnComplete(() =>
@@ -129,11 +130,19 @@ public class Arm : MonoBehaviour
                 boxcollider.enabled = true;
                 if (transform.childCount > 0)
                 {
-                    if (OnEat != null) OnEat.Invoke(food.foodType);
-                    Destroy(food.gameObject); // 或添加食用动作？
-                    Debug.Log("饱食度++");
+                    if (OnEat != null) OnEat.Invoke(pickFood.foodType);
+                    pickFood.BeEat();
+                    //  Destroy(food.gameObject); // 或添加食用动作？
+                    //Debug.Log("饱食度++");
                 }
             });
+        }
+    }
+    public void ClearFood()
+    {
+        if (pickFood != null)
+        {
+            pickFood.BeEat();
         }
     }
 }

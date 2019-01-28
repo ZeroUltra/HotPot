@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class FoodGenerator : MonoBehaviour
 {
-    public Vector2 aeraV2 = new Vector2(-10, 10);
+    public Vector2 aeraV2 = new Vector2(-10f, 10f);
     public Vector2 nextGenRateTime = new Vector2(0.5f, 3f);
+    public int foodMaxCreate = 5;
     private float nextGenerateTime;
+
 
     public GameObject[] foodPrefs;
     public List<Food> foodList = new List<Food>();
@@ -19,19 +21,22 @@ public class FoodGenerator : MonoBehaviour
 
     void Update()
     {
-        timer += Time.deltaTime;
-        if (timer >= nextGenerateTime)
-            Generate();
+        if (foodList.Count < foodMaxCreate)
+        {
+            timer += Time.deltaTime;
+            if (timer >= nextGenerateTime)
+                Generate();
+        }
     }
 
     void Generate()
     {
         timer = 0;
-        nextGenerateTime = Random.Range(nextGenRateTime.x, nextGenRateTime.y);
+        nextGenerateTime = Random.Range((float)nextGenRateTime.x, (float)nextGenRateTime.y);
         Vector3 dir = new Vector3(Random.Range(aeraV2.x, aeraV2.y), Random.Range(aeraV2.x, aeraV2.y), 0).normalized;
 
-        Food newFood = Instantiate(foodPrefs[0]).GetComponent<Food>();
-
+        Food newFood = Instantiate(foodPrefs[Random.Range(0, foodPrefs.Length)]).GetComponent<Food>();
+        newFood.OnBeEat += () => { foodList.Remove(newFood); };
         newFood.transform.parent = transform;
         newFood.transform.position = transform.position + dir;
 
