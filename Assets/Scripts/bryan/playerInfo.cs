@@ -5,6 +5,7 @@ using System;
 public class PlayerInfo
 {
     public event Action OnVomit;
+    public event Action OnBeVomit;
     public float appetite = 1.0f;
     public int combo = 0;
     public int id;// 位置信息 0-左上 1-右上 2-左下 3-右下
@@ -53,8 +54,7 @@ public class PlayerInfo
     {
         combo = 0;
         appetite = 1.0f;
-
-
+        OnBeVomit.Invoke();
     }
 
     public void vomit(int delta)
@@ -124,9 +124,9 @@ public class PlayerInfo
         {
             float buff = 1.0f;
             combo++;
-            if (combo > 3)
+            if (combo >= 2)
             {
-                buff += 0.5f * (combo - 3);
+                buff += 0.5f * (combo - 2);
             }
             delta = (int)(buff * (foodSatie[foodtype_] + (int)(getPrefer(foodtype_))));
             Repletion += delta;

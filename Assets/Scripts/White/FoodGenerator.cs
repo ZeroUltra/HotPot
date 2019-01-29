@@ -34,7 +34,7 @@ public class FoodGenerator : MonoBehaviour
         timer = 0;
         nextGenerateTime = Random.Range((float)nextGenRateTime.x, (float)nextGenRateTime.y);
         Vector3 dir = new Vector3(Random.Range(aeraV2.x, aeraV2.y), Random.Range(aeraV2.x, aeraV2.y), 0).normalized;
-
+        //
         Food newFood = Instantiate(foodPrefs[Random.Range(0, foodPrefs.Length)]).GetComponent<Food>();
         newFood.OnBeEat += () => { foodList.Remove(newFood); };
         newFood.transform.parent = transform;

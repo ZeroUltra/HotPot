@@ -7,11 +7,12 @@ using DG.Tweening;
 public class PlayerUIInfo : MonoBehaviour
 {
     public Text nameTxt;
-    public Image repletionBar;
-    public Text appetite;
+    public Image repletionBar; //饱和
+    public Text repletionText;
+    public Text appetite;//食欲
     public Text prefs;
     public Image head;
-    private float appetiteNum = 0;
+    private float repletionNum = 0;
     /// <summary>
     /// 根据ID确定位置
     /// </summary>
@@ -30,17 +31,17 @@ public class PlayerUIInfo : MonoBehaviour
     {
         //Debug.Log(info.repletion);
         repletionBar.DOFillAmount((float)info.Repletion / 100.0f, 0.8f);
-        appetite.text = info.appetite.ToString();
-        DOTween.To(() => appetiteNum, x => appetiteNum = x, (float)info.Repletion, 0.8f).OnUpdate(()=>
+        repletionText.text = info.Repletion.ToString();
+        DOTween.To(() => repletionNum, x => repletionNum = x, (float)info.Repletion, 0.8f).OnUpdate(() =>
         {
-            appetite.text = appetiteNum.ToString("f0")+ "%";
+            repletionText.text = repletionNum.ToString("f0") + "%";
         });
-       
-        List<string> preferList = info.getPreferLists();
-        string preferStr = "";
-        foreach (string name in preferList)
-            preferStr += (name + "\n");
-        prefs.text = preferStr;
+        appetite.text = (1 + ((info.getCombo()-1) * 0.5f)).ToString();
+        //List<string> preferList = info.getPreferLists();
+        //string preferStr = "";
+        //foreach (string name in preferList)
+        //    preferStr += (name + "\n");
+        //prefs.text = preferStr;
     }
 
 

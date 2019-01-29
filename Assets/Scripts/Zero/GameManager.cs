@@ -19,13 +19,13 @@ public class GameManager : Singleton<GameManager>
             }
         }
     }
-    private void OnLevelWasLoaded(int level)
-    {
-        if (level > 3)
-        {
-            GetComponent<AudioSource>().Stop();
-        }
-    }
+    //private void OnLevelWasLoaded(int level)
+    //{
+    //    if (level > 3)
+    //    {
+    //        GetComponent<AudioSource>().Stop();
+    //    }
+    //}
 
 
     // public GameObject father;
@@ -38,7 +38,7 @@ public class GameManager : Singleton<GameManager>
     {
         Screen.SetResolution(1920, 1080, true);
         DontDestroyOnLoad(this.gameObject);
-         LoadScene("01Start");
+        LoadScene("01Start");
     }
     /// <summary>
     /// 场景跳转

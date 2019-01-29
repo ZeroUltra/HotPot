@@ -91,6 +91,12 @@ public class Role : MonoBehaviour
         vomitPos = transform.Find("vomitpos").position;
 
         playerInfo.OnVomit += PlayerInfo_OnVomit;
+        playerInfo.OnBeVomit += PlayerInfo_OnBeVomit;
+    }
+
+    private void PlayerInfo_OnBeVomit()
+    {
+        playerUIInfo.SetPanel(this.playerInfo);
     }
 
     private void PlayerInfo_OnVomit()
