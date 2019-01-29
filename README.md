@@ -2,20 +2,20 @@
 
 2019 Global Game Jam
 
-*Credits
+- Credits
 
-**Bryan --Programmer/Animator
+* Bryan --Programmer/Animator
 
-**Clark --Artistist: UI/Designer
+Clark --Artistist: UI/Designer
 
-**Diffar --Designer
+Diffar --Designer
 
-**Mio --Artist: Enviornmental
+Mio --Artist: Enviornmental
 
-**Roger --Programmer
+Roger --Programmer
 
-**Venshines --Artist: Character
+Venshines --Artist: Character
 
-**White --Programmer
+White --Programmer
 
-**Xinhai --Programmer/Designer
+Xinhai --Programmer/Designer
